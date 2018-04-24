@@ -1,9 +1,7 @@
 /*
- * Usage of CDK Matrix
- *
- * File:   example1.cc
- * Author: Stephen Perkins
- * Email:  stephen.perkins@utdallas.edu
+Mayher Sandhu
+mxs163430
+SE3377.501
  */
 
 #include <iostream>
@@ -16,19 +14,20 @@
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
 #define BOX_WIDTH 20
-#define MATRIX_NAME_STRING "Test Matrix"
+#define MATRIX_NAME_STRING "Matrix"
 
 using namespace std;
 
 const int maxRecordStringLength=25;
 
+//class for Binary File Record
 class BinaryFileRecord
 {
 public:
   uint8_t strLength;
   char stringBuffer[maxRecordStringLength];
 };
-
+//class for Binary File Header
 class BinaryFileHeader
 {
 public: uint32_t magicNumber;
@@ -85,11 +84,14 @@ int main()
 
   ifstream binInfile("cs3377.bin", ios::in | ios::binary);
 
+  //initialize the BinaryFileHeader and BinaryFileRecord
   BinaryFileHeader *binaryHeader=new BinaryFileHeader();
   BinaryFileRecord *binaryRecord=new BinaryFileRecord();
 
+  //read the BinaryFileHeader
   binInfile.read((char *) binaryHeader, sizeof(BinaryFileHeader));
 
+  //intialize the strings for the cells in matrix
   string magicNo="Magic: 0x";
   string version="Version: ";
   string numRecords="NumRecords: ";
@@ -102,50 +104,64 @@ int main()
   string strlen4="strlen: ";
   string string4="";
 
+  //use stringstreams to get each value
+  
+  //getting magic Number
   stringstream convertMagic;
   convertMagic << hex << uppercase << binaryHeader->magicNumber;
   magicNo += convertMagic.str();
 
+  //getting the version number
   stringstream convertVersion;
   convertVersion << hex << binaryHeader->versionNumber;
   version+=convertVersion.str();
 
+  //getting the number of records
   stringstream convertNumRec;
   convertNumRec << binaryHeader->numRecords;
   numRecords+=convertNumRec.str();
 
+  //getting the first string
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   stringstream convertString1;
   convertString1 << binaryRecord->stringBuffer;
   string1+=convertString1.str();
+  //getting the length of first string
   stringstream stringLength1;
   stringLength1 << string1.length();
   strlen1+=stringLength1.str();
 
+  //getting the second string
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   stringstream convertString2;
   convertString2 << binaryRecord->stringBuffer;
   string2+=convertString2.str();
+  //getting the length of the second string
   stringstream stringLength2;
   stringLength2 << string2.length();
   strlen2+=stringLength2.str();
 
+  //getting the third string
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   stringstream convertString3;
   convertString3 << binaryRecord->stringBuffer;
   string3+=convertString3.str();
+  //getting the length of the third string
   stringstream stringLength3;
   stringLength3 << string3.length();
   strlen3+=stringLength3.str();
 
+  //getting the fourth string
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   stringstream convertString4;
   convertString4 << binaryRecord->stringBuffer;
   string4+=convertString4.str();
+  //getting the length of the fourth string
   stringstream stringLength4;
   stringLength4 << string4.length();
   strlen4+=stringLength4.str();
 
+  //setting each matrix cell to the input read in above
   setCDKMatrixCell(myMatrix, 1, 1, magicNo.c_str());
   setCDKMatrixCell(myMatrix, 1, 2, version.c_str());
   setCDKMatrixCell(myMatrix, 1, 3, numRecords.c_str());
@@ -158,9 +174,7 @@ int main()
   setCDKMatrixCell(myMatrix, 5, 1, strlen4.c_str());
   setCDKMatrixCell(myMatrix, 5, 2, string4.c_str());
 
-  /*
-   * Dipslay a message
-   */
+  //draw the matrix
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
